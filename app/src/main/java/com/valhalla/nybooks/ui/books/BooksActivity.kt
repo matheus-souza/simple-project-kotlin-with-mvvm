@@ -10,7 +10,6 @@ class BooksActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        toolbarMain.title = "Books"
         setSupportActionBar(toolbarMain)
     }
 }
