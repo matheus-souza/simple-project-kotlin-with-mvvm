@@ -2,10 +2,11 @@ package com.valhalla.nybooks.ui.books
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.valhalla.nybooks.R
-import com.valhalla.nybooks.data.model.Book
 import kotlinx.android.synthetic.main.activity_main.*
 
 class BooksActivity : AppCompatActivity() {
@@ -15,20 +16,20 @@ class BooksActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbarMain)
 
-        with(recyclerBooks) {
-            layoutManager = LinearLayoutManager(this@BooksActivity, RecyclerView.VERTICAL, false)
-            setHasFixedSize(true)
-            adapter = BooksAdapter(getBooks())
+        val viewModel = ViewModelProvider(this).get(BooksViewModel::class.java)
 
-        }
+        viewModel.booksLiveData.observe(this, Observer {
+            it?.let { books ->
+                with(recyclerBooks) {
+                    layoutManager =
+                        LinearLayoutManager(this@BooksActivity, RecyclerView.VERTICAL, false)
+                    setHasFixedSize(true)
+                    adapter = BooksAdapter(books)
+                }
+            }
+        })
 
+        viewModel.getBooks()
     }
 
-    fun getBooks(): List<Book> {
-        return listOf(
-            Book("title", "autor"),
-            Book("title2", "autor2"),
-            Book("title3", "autor3")
-        )
-    }
 }
