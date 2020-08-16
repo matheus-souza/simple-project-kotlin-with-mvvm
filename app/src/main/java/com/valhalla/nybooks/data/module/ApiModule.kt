@@ -1,6 +1,5 @@
 package com.valhalla.nybooks.data.module
 
-import com.squareup.moshi.Moshi
 import com.valhalla.nybooks.data.service.NYTServices
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
