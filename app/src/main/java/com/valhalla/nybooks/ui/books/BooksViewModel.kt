@@ -21,27 +21,25 @@ class BooksViewModel : ViewModel() {
                 call: Call<BookBodyResponse>,
                 response: Response<BookBodyResponse>
             ) {
-                if (response.isSuccessful) {
-                    val books: MutableList<Book> = mutableListOf()
+                when {
+                    response.isSuccessful -> {
+                        val books: MutableList<Book> = mutableListOf()
 
-                    response.body()?.let {bookBodyResponse ->
-                        for (result in bookBodyResponse.resultResponse) {
-                            val book = Book(
-                                title = result.bookDetailResponses[0].title,
-                                author = result.bookDetailResponses[0].author,
-                                description = result.bookDetailResponses[0].description
-                            )
-
-                            books.add(book)
+                        response.body()?.let {bookBodyResponse ->
+                            for (result in bookBodyResponse.resultResponse) {
+                                books.add(result.bookDetailResponses[0].getBookModel())
+                            }
                         }
-                    }
 
-                    booksLiveData.value = books
-                    viewFlipperLiveData.value = Pair(VIEW_FLIPPER_BOOKS, null)
-                } else if (response.code() == 401) {
-                    viewFlipperLiveData.value = Pair(VIEW_FLIPPER_ERROR, R.string.error_401)
-                } else {
-                    viewFlipperLiveData.value = Pair(VIEW_FLIPPER_ERROR, R.string.error_400_generic)
+                        booksLiveData.value = books
+                        viewFlipperLiveData.value = Pair(VIEW_FLIPPER_BOOKS, null)
+                    }
+                    response.code() == 401 -> {
+                        viewFlipperLiveData.value = Pair(VIEW_FLIPPER_ERROR, R.string.error_401)
+                    }
+                    else -> {
+                        viewFlipperLiveData.value = Pair(VIEW_FLIPPER_ERROR, R.string.error_400_generic)
+                    }
                 }
             }
 
