@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.valhalla.nybooks.R
+import com.valhalla.nybooks.data.repository.BooksApiDataSource
 import com.valhalla.nybooks.ui.base.BaseActivity
 import com.valhalla.nybooks.ui.details.BookDetailsActivity
 import kotlinx.android.synthetic.main.activity_books.*
@@ -18,7 +19,8 @@ class BooksActivity : BaseActivity() {
 
         setupToolbar(toolbarMain, R.string.books_title)
 
-        val viewModel = ViewModelProvider(this).get(BooksViewModel::class.java)
+        val viewModel: BooksViewModel =
+            BooksViewModel.ViewModelFactory(BooksApiDataSource()).create(BooksViewModel::class.java)
 
         viewModel.booksLiveData.observe(this, Observer {
             it?.let { books ->
@@ -39,7 +41,7 @@ class BooksActivity : BaseActivity() {
         })
 
         viewModel.viewFlipperLiveData.observe(this, Observer {
-            it?.let {viewFlipper ->
+            it?.let { viewFlipper ->
                 vfBooks.displayedChild = viewFlipper.first
                 viewFlipper.second?.let { errorMessageResId ->
                     tvError.text = getString(errorMessageResId)
